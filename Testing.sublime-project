@@ -4,5 +4,19 @@
 		{
 			"path": "."
 		}
-	]
+	],
+
+	"build_systems":
+    [
+        {
+            "name": "MinGW quick rebuild",
+            "working_dir": "$project_path\\build",
+            "cmd": "mingw32-make"
+        },
+        {
+            "name": "MinGW Release build",
+            "working_dir": "$project_path",
+            "cmd": "C:\\Qt\\5.12.5\\mingw73_64\\bin\\qtenv2.bat && cd $project_path && MinGWBuild.bat"
+        }
+    ]
 }
