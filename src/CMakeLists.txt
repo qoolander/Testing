@@ -7,5 +7,5 @@ add_library(faclib STATIC Factorial.cpp)
 target_include_directories(faclib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # The main program
-add_executable(prog main.cpp)
+add_executable(prog main.cpp messageHandler.cpp)
 target_link_libraries(prog PRIVATE faclib UI)
