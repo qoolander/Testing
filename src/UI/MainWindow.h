@@ -2,6 +2,9 @@
 #include <QMainWindow>
 #include "TitleBarWidget.h"
 #include "StatusBar.h"
+#include "CodeEditor.h"
+#include "..\Interpreter\Interpreter.h"
+#include "MemoryDisplay.h"
 
 class MainWindow : public QMainWindow
 {
@@ -14,12 +17,19 @@ protected slots:
     void titleMouseReleased();
     void closeButtonClick();
     void maximizeButtonClick();
+    void runProgram();
 protected:
 	TitleBarWidget* titleBar; 
-	StatusBar* statusBar;
+	StatusBar* myStatusBar;
 	QWidget *mainPain;
     void mouseMoveEvent(QMouseEvent *event) override;
 private:
+	void configureMenuBar();
+
+	Interpreter *interpreter;
+	CodeEditor *editor;
+    MemoryDisplay *memDisplay;
+
 	bool pressed;
     int offsetx;
     int offsety;

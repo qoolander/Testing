@@ -3,12 +3,13 @@
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QtDebug>
-#include <QTextEdit>
-
+#include <QStatusBar> //TODO: Reconfigure my status bar to extend QStatusBar
+#include <QMenuBar>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
+    interpreter = new Interpreter();
 
 	pressed = false;
 
@@ -24,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(titleBar->buttons, SIGNAL(closeButtonClick()), this, SLOT(closeButtonClick()));
 	QObject::connect(titleBar->buttons, SIGNAL(maximizeButtonClick()), this, SLOT(maximizeButtonClick()));
 
+
+    configureMenuBar();
+
 	mainPain = new QWidget();
 	mainPain->setStyleSheet("background-color: #26596A;");
 
@@ -31,14 +35,16 @@ MainWindow::MainWindow(QWidget *parent)
 	mainPainInner->setStyleSheet("background-color: #372f2f; color: white;");
 
 	QHBoxLayout *splitLayout = new QHBoxLayout;
-	QTextEdit *textEditPane = new QTextEdit();
-	textEditPane->setStyleSheet("background-color: #564949;");
-	textEditPane->setMaximumWidth(width()*0.5);
+    editor = new CodeEditor(this);
+	editor->setMaximumWidth(width()*0.5);
 	QWidget *displayPane = new QWidget();
 	displayPane->setStyleSheet("background-color: #564949;");
 
+    memDisplay = new MemoryDisplay(this);
+
 	splitLayout->setMargin(0);
-	splitLayout->addWidget(textEditPane);
+    splitLayout->addWidget(memDisplay);
+	splitLayout->addWidget(editor);
 	splitLayout->addWidget(displayPane);
 
 	mainPainInner->setLayout(splitLayout);
@@ -58,18 +64,20 @@ MainWindow::MainWindow(QWidget *parent)
 	innerLayout->setContentsMargins(1,0,1,1);
 	mainPain->setLayout(innerLayout);
 
-	statusBar = new StatusBar(this);
-	statusBar->setMaximumHeight(height()*0.02);
+    myStatusBar = new StatusBar(this);
+	myStatusBar->setMaximumHeight(height() * 0.02);
+
 
 	// Set layout
     QVBoxLayout *layout = new QVBoxLayout;
     //layout->addWidget(titleBar);
     layout->addWidget(mainPain);
-    layout->addWidget(statusBar);
+    layout->addWidget(myStatusBar);
 
     layout->setSpacing(0);
 	layout->setMargin(0);
-   	
+
+
     // Set layout in QWidget
     QWidget *window = new QWidget();
     window->setLayout(layout);
@@ -104,7 +112,7 @@ void MainWindow::closeButtonClick(){
 
 void MainWindow::message(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    statusBar->setStatus(type, msg);
+    myStatusBar->setStatus(type, msg);
 
     if(type==QtInfoMsg){
 		mainPain->setStyleSheet("background-color: #26596A;");
@@ -122,4 +130,46 @@ void MainWindow::maximizeButtonClick()
 		showNormal();
 	}
 	max=!max;
+}
+
+void MainWindow::configureMenuBar() {
+    menuBar()->setStyleSheet("color: white;"); //TODO: Implement File menu
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    QAction *newAct = new QAction( tr("&New"), this);
+    newAct->setShortcuts(QKeySequence::New);
+    newAct->setStatusTip(tr("Create a new file"));
+    //connect(newAct, &QAction::triggered, this, &MainWindow::newFile);
+    fileMenu->addAction(newAct);
+
+    QMenu *programMenu = menuBar()->addMenu(tr("Program"));
+    QAction *runProgramAction = new QAction(tr("&run"), this);
+    runProgramAction->setShortcut(Qt::Key_R);
+    runProgramAction->setStatusTip(tr("Run current program"));
+    connect(runProgramAction, &QAction::triggered, this, &MainWindow::runProgram);
+    programMenu->addAction(runProgramAction);
+}
+
+void MainWindow::runProgram() {
+    auto lines = editor->toPlainText().split("\n");
+    bool *success = new bool;
+    std::list<PART> data;
+    data.push_front(0x01); //set instruction address to start of program;
+    WORD current;
+    int i = 1;
+    try {
+        for (auto item : lines) {
+            if (item.length() != 8) {
+                throw "unable to pass line " + QString::number(i, 16)  + ". Incorrect line length";
+            }
+            current = item.toUInt(success, 16);
+            Q_ASSERT(success);
+            data.push_back((short) ((current & 0xffff0000) >> (16)));
+            data.push_back((short) (current & 0xffff));
+            i += 2;
+        }
+    }catch (QString msg){
+        qWarning()<<"Program failed to run: " << msg;
+        return;
+    }
+    interpreter->initiateProgram(data);
 }
