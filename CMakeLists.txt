@@ -9,5 +9,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+add_custom_target(
+        stylesheet ALL
+        COMMAND qtsass ${CMAKE_CURRENT_SOURCE_DIR}/src/style/stylesheet.scss -o ${CMAKE_CURRENT_SOURCE_DIR}/src/res/style/stylesheet.qss
+        BYPRODUCTS src/res/style
+        COMMENT "Generating qss"
+)
+
 add_subdirectory(src)
 

@@ -25,6 +25,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 private:
 	void configureMenuBar();
+    void configureStatusBar();
 
 	Interpreter *interpreter;
 	CodeEditor *editor;
@@ -34,5 +35,6 @@ private:
     int offsetx;
     int offsety;
     bool max;
+
 };
 

@@ -21,6 +21,19 @@ int main(int argc, char *argv[]) {
 	MessageHandler *mh = mh->getInstance();
 	mh->setMainWindow(&w);
 
+    QFile file(":/stylesheet");
+    try {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            Q_ASSERT(file.isOpen() && file.isReadable());
+            a.setStyleSheet(file.readAll());
+            //qInfo() << "stylesheet successfully loaded from:" << file.fileName();
+            file.close();
+        }else{
+            qWarning() << "stylesheet not loaded from:" << file.fileName();
+        }
+    }catch (std::exception *e){
+        qFatal(e->what());
+    }
 
 	qInstallMessageHandler(_handleMessage);
 	w.show();

@@ -14,8 +14,9 @@ public:
 protected:
     QSize sizeHint() const override
     {
-        return QSize(parentWidget()->width()*0.3, parentWidget()->height());
-    }
+        return QSize(parentWidget()->width()*0.1, parentWidget()->height());
+    };
+
 };
 
 

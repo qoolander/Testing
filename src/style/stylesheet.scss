@@ -1,0 +1,51 @@
+$colorPrimary:#292323;
+$colorText:#f8f7f7;
+$colorHighlight:#26596A;
+$colorWarning:#AA5639;
+
+QMainWindow
+{
+  background-color: $colorPrimary;
+  color: $colorText;
+}
+
+/*  ---QMenu STYLE--- */
+QMenuBar
+{
+  background-color: $colorPrimary;
+  color: $colorText;
+  min-height: 40px;
+}
+
+QMenuBar::item:selected
+{
+  background-color:$colorHighlight;
+  /*border: 1px solid #5285A6;*/
+}
+
+QMenu
+{
+  background-color: $colorPrimary;
+  color: $colorText;
+  padding:0px;
+}
+
+QMenu::item::selected
+{
+  background-color: $colorHighlight;
+}
+
+QStatusBar
+{
+  color:$colorText;
+}
+
+QStatusBar[msgType="warning"]
+{
+  background-color:$colorWarning;
+}
+
+QStatusBar[msgType="info"]
+{
+  background-color:$colorHighlight;
+}

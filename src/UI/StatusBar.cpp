@@ -5,8 +5,8 @@
 StatusBar::StatusBar(QWidget *parent)
 	: QWidget(parent)
 {
-	setStyleSheet("background-color: #26596A;");
-
+    setObjectName("appStatusBar");
+	setProperty("msgState", "info");
 	statusLabel = new QLabel();
 	statusLabel->setText("Ready:");
 	QFont f( "Lato", 8);
@@ -30,12 +30,13 @@ void StatusBar::setStatus(QtMsgType type, QString msg)
 {
 	if(!QtDebugMsg){
     	if(type == QtInfoMsg){
-    		setStyleSheet("background-color: #26596A;");
+            setProperty("msgState", "info");
+            setStyleSheet("background-color: #26596A;");
     		statusLabel->setText(QString("Info: %1").arg(msg));
     		statusLabel->adjustSize();
     	}else{
 			setStyleSheet("background-color: #AA5639;");
-
+            setProperty("msgState", "info");
     		statusLabel->setText(QString("Warning: %1").arg(msg));
     	}
 	}

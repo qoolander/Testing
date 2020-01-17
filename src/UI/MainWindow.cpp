@@ -16,15 +16,15 @@ MainWindow::MainWindow(QWidget *parent)
 	setWindowTitle(tr("Main Window by Sam"));
 	//setWindowFlags( Qt::CustomizeWindowHint );
 	resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
-	setStyleSheet("background-color: #372f2f;");
 
+	/*
 	titleBar = new TitleBarWidget(this);
 	titleBar->setMaximumHeight(height()*0.04);
 	QObject::connect(titleBar, SIGNAL(signalMousePressed(int, int)), this, SLOT(titleMousePressed(int, int)));
 	QObject::connect(titleBar, SIGNAL(signalMouseReleased()), this, SLOT(titleMouseReleased()));
 	QObject::connect(titleBar->buttons, SIGNAL(closeButtonClick()), this, SLOT(closeButtonClick()));
 	QObject::connect(titleBar->buttons, SIGNAL(maximizeButtonClick()), this, SLOT(maximizeButtonClick()));
-
+    */ //Custom title bar
 
     configureMenuBar();
 
@@ -64,15 +64,17 @@ MainWindow::MainWindow(QWidget *parent)
 	innerLayout->setContentsMargins(1,0,1,1);
 	mainPain->setLayout(innerLayout);
 
+	/*
     myStatusBar = new StatusBar(this);
 	myStatusBar->setMaximumHeight(height() * 0.02);
+	*/ //My Custom StatusBar --- possibly obsolete
 
+	configureStatusBar();
 
 	// Set layout
     QVBoxLayout *layout = new QVBoxLayout;
     //layout->addWidget(titleBar);
     layout->addWidget(mainPain);
-    layout->addWidget(myStatusBar);
 
     layout->setSpacing(0);
 	layout->setMargin(0);
@@ -112,13 +114,24 @@ void MainWindow::closeButtonClick(){
 
 void MainWindow::message(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    myStatusBar->setStatus(type, msg);
-
-    if(type==QtInfoMsg){
+    switch(type){
+    case QtInfoMsg:
 		mainPain->setStyleSheet("background-color: #26596A;");
-    }else{
+		statusBar()->setProperty("msgType", "info");
+        statusBar()->showMessage(msg);
+        break;
+    case QtWarningMsg:
 		mainPain->setStyleSheet("background-color: #AA5639;");
+		qInfo()<< "msgType param is:" << statusBar()->property("msgType");
+		statusBar()->showMessage("warning: " + msg);
+		statusBar()->setProperty("msgType", "warning");
+		break;
+    default:
+        mainPain->setStyleSheet("background-color: #26596A;");
+        statusBar()->setProperty("msgType", "info");
+        statusBar()->showMessage(msg);
     }
+    statusBar()->repaint();
 }
 
 
@@ -133,7 +146,7 @@ void MainWindow::maximizeButtonClick()
 }
 
 void MainWindow::configureMenuBar() {
-    menuBar()->setStyleSheet("color: white;"); //TODO: Implement File menu
+    //menuBar()->setStyleSheet("background-color: #302020; color: white"); //TODO: Implement File stylesheet
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     QAction *newAct = new QAction( tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
@@ -172,4 +185,9 @@ void MainWindow::runProgram() {
         return;
     }
     interpreter->initiateProgram(data);
+}
+
+void MainWindow::configureStatusBar() {
+    statusBar()->setProperty("msgType", "info");
+    statusBar()->showMessage(tr("Ready: "));
 }

@@ -92,7 +92,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = "0x" + QString::number(blockNumber*2 + 1, 16);
-            painter.setPen(Qt::white);
+            painter.setPen(palette().text().color()); //TODO: Set according to stylesheet
             painter.setFont(QFont(FONT_NAME, FONT_SIZE));
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
                              Qt::AlignRight, number);

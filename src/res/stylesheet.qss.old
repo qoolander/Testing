@@ -1,0 +1,52 @@
+/* -----Color Variables------ */
+/*$background = #f12312
+TODO: Use SASS/SCSS
+*/
+
+
+QMainWindow
+{
+    background-color:#292323;
+    color: #f8f7f7;
+}
+
+/*  ---QMenu STYLE--- */
+QMenuBar
+{
+    background-color: #292323;
+    color: #f8f7f7;
+    min-height: 40px;
+}
+
+QMenuBar::item:selected
+{
+    background-color:#26596A;
+    /*border: 1px solid #5285A6;*/
+}
+
+QMenu
+{
+    background-color: #292323;
+    color: #f8f7f7;
+    padding:0px;
+}
+
+QMenu::item::selected
+{
+    background-color: #26596A;
+}
+
+QStatusBar
+{
+    color:#f8f7f7;
+}
+
+QStatusBar[msgType="warning"]
+{
+    background-color:#AA5639;
+}
+
+QStatusBar[msgType="info"]
+{
+    background-color:#26596A;
+}
